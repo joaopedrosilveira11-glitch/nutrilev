@@ -1,0 +1,28 @@
+.audience-section{padding-top:100px;padding-bottom:100px;display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:center}
+.audience-section .section-intro h2,.coach-section h2{font-size:clamp(2.4rem,4.5vw,4rem)}
+.audience-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.audience-grid span,.coach-resources span{padding:18px 20px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font-weight:700;font-size:14px}
+.audience-grid span::before,.coach-resources span::before{content:"✓";color:var(--green);margin-right:10px}
+.audience-section-dark{max-width:none;padding-left:max(32px,calc((100% - 1176px)/2));padding-right:max(32px,calc((100% - 1176px)/2));background:var(--deep);color:#effff8}
+.audience-section-dark .section-intro p{color:#b6d0c5}
+.audience-section-dark .eyebrow{color:var(--mint)}
+.audience-section-dark .audience-grid span{background:#285a49;border-color:#3d705f;color:#effff8}
+.audience-section-dark .audience-grid span::before{color:var(--mint)}
+.coach-section{padding-top:110px;padding-bottom:110px;display:grid;grid-template-columns:.8fr 1.2fr;gap:70px;align-items:center}
+.coach-section h2{max-width:520px;margin:0;font:800 clamp(2.4rem,4vw,3.8rem)/1.03 Manrope,sans-serif;letter-spacing:-.07em}
+.coach-resources{display:flex;flex-wrap:wrap;gap:12px}
+.coach-resources span{background:#f1fbf5}
+.plans-grid{display:grid;grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:55px}
+.plan-card{padding:25px;border:1px solid var(--line);border-radius:16px;background:#fff;min-height:340px;display:flex;flex-direction:column;align-items:flex-start}
+.plan-card-featured{background:#e7f8ed;border-color:#b9e4cc;box-shadow:0 16px 35px #23564512}
+.plan-audience{color:var(--green);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.plan-card h3{font:700 20px Manrope,sans-serif;letter-spacing:-.05em;margin:15px 0}
+.plan-card .pricing-value{margin-bottom:13px}
+.plan-card p{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 22px}
+.plan-features{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:8px;color:var(--ink);font-size:13px;line-height:1.35}.plan-features li::before{content:"✓";color:var(--green);font-weight:800;margin-right:8px}
+.plan-card .button{margin-top:auto}
+.plan-card-enterprise .pricing-value strong{font-size:32px;line-height:1.1}
+.button-outline{border:1px solid #b9dacc;color:var(--deep);background:#fff}
+.pricing-copy{grid-column:1/-1}
+@media(max-width:800px){.audience-section,.coach-section{grid-template-columns:1fr;gap:35px;padding-top:70px;padding-bottom:70px}.plans-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.audience-grid,.plans-grid{grid-template-columns:1fr}.coach-resources{display:grid;grid-template-columns:1fr}.hero-actions{align-items:flex-start;flex-direction:column;gap:16px}}

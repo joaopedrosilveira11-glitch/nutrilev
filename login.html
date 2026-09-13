@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Entrar | Nutrilev</title>
+    <link rel="icon" type="image/png" href="assets/logo-icon.png" />
+    <link rel="stylesheet" href="platform.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="lib/config.js"></script>
+    <script src="services/index.js"></script>
+    <script src="services/supabase.js"></script>
+    <script src="auth/roles.js"></script>
+  </head>
+  <body class="login-page">
+    <main class="login-layout">
+      <section class="login-intro">
+        <a class="platform-brand" href="landing.html"><img src="assets/logo-icon.png" alt="" /><span>Nutrilev<small>plataforma</small></span></a>
+        <div>
+          <span class="eyebrow">PLATAFORMA NUTRILEV</span>
+          <h1>Seu próximo passo começa aqui.</h1>
+          <p>Entre para acompanhar sua evolução, cuidar dos seus alunos ou administrar sua academia em um único lugar.</p>
+        </div>
+        <a href="landing.html">← Voltar para a landing</a>
+      </section>
+      <section class="login-panel">
+        <div class="auth-card login-card">
+          <img src="assets/logo-icon.png" alt="" />
+          <span class="eyebrow accent" id="formEyebrow">ACESSO</span>
+          <h2 id="formTitle">Entre na sua conta.</h2>
+          <p id="formDescription">Seu perfil define automaticamente a área disponível.</p>
+          <p class="selected-plan" id="selectedPlan" hidden></p>
+          <form id="loginForm">
+            <label class="signup-field" hidden>Nome completo<input name="name" type="text" autocomplete="name" placeholder="Seu nome completo" /></label>
+            <label>E-mail<input name="email" type="email" autocomplete="email" placeholder="voce@exemplo.com" required /></label>
+            <label>Senha<input name="password" type="password" autocomplete="current-password" minlength="6" placeholder="Sua senha" required /></label>
+            <label class="signup-confirm-field" hidden>Confirmar senha<input name="password_confirmation" type="password" autocomplete="new-password" minlength="6" placeholder="Confirme sua senha" /></label>
+            <p class="form-message" id="loginMessage" hidden></p>
+            <button class="primary-button" type="submit" id="submitButton">Entrar <span>→</span></button>
+          </form>
+          <div class="login-links">
+            <button type="button" id="forgotPasswordButton">Recuperar senha</button>
+            <button type="button" id="toggleSignupButton">Criar conta</button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="auth.js"></script>
+    <script>
+      (function () {
+        const form = document.getElementById('loginForm');
+        const message = document.getElementById('loginMessage');
+        const submit = document.getElementById('submitButton');
+        const toggleSignup = document.getElementById('toggleSignupButton');
+        const forgotPassword = document.getElementById('forgotPasswordButton');
+        const signupField = document.querySelector('.signup-field');
+        const signupConfirmField = document.querySelector('.signup-confirm-field');
+        const title = document.getElementById('formTitle');
+        const description = document.getElementById('formDescription');
+        const eyebrow = document.getElementById('formEyebrow');
+        const selectedPlan = document.getElementById('selectedPlan');
+        const planCatalog = {
+          free: ['Nutrilev Free', 'R$ 0'],
+          plus: ['Nutrilev Plus', 'R$ 19,90/mês'],
+          'academy-start': ['Academia Start', 'R$ 99/mês'],
+          'academy-pro': ['Academia Pro', 'R$ 179/mês'],
+          'academy-business': ['Academia Business', 'R$ 299/mês'],
+          enterprise: ['Enterprise', 'a partir de R$ 449/mês'],
+        };
+        const requestedPlan = new URLSearchParams(window.location.search).get('plan');
+        let selectedPlanId = planCatalog[requestedPlan] ? requestedPlan : 'free';
+        let signupMode = new URLSearchParams(window.location.search).get('signup') === '1';
+
+        function showMessage(text, success) {
+          message.textContent = text;
+          message.hidden = !text;
+          message.classList.toggle('success', Boolean(success));
+        }
+
+        function setSignupMode(value) {
+          signupMode = value;
+          signupField.hidden = !signupMode;
+          signupField.querySelector('input').required = signupMode;
+          signupConfirmField.hidden = !signupMode;
+          signupConfirmField.querySelector('input').required = signupMode;
+          title.textContent = signupMode ? 'Crie sua conta.' : 'Entre na sua conta.';
+          description.textContent = signupMode ? 'Comece sua jornada no Nutrilev.' : 'Seu perfil define automaticamente a área disponível.';
+          eyebrow.textContent = signupMode ? 'NOVA CONTA' : 'ACESSO';
+          submit.innerHTML = signupMode ? 'Criar conta <span>→</span>' : 'Entrar <span>→</span>';
+          toggleSignup.textContent = signupMode ? 'Já tenho uma conta' : 'Criar conta';
+          forgotPassword.hidden = signupMode;
+          selectedPlan.hidden = !signupMode || !planCatalog[selectedPlanId];
+          selectedPlan.textContent = signupMode ? `Plano selecionado: ${planCatalog[selectedPlanId][0]} — ${planCatalog[selectedPlanId][1]}` : '';
+          showMessage('');
+        }
+
+        setSignupMode(signupMode);
+
+        if (new URLSearchParams(window.location.search).get('error') === 'role') {
+          showMessage('Não foi possível identificar o perfil desta conta.', false);
+        }
+
+        window.NutrilevAuth.client?.auth.getSession().then(({ data, error }) => {
+          if (error) {
+            console.error('session restore error', error);
+            return;
+          }
+          if (data.session) {
+            showMessage('Sessão encontrada. Abrindo sua plataforma...', true);
+            return window.NutrilevAuth.redirectForRole();
+          }
+          return null;
+        }).catch((error) => {
+          console.error('session redirect error', error);
+        });
+
+        toggleSignup.addEventListener('click', () => setSignupMode(!signupMode));
+        forgotPassword.addEventListener('click', async () => {
+          const email = form.elements.email.value.trim();
+          if (!email) {
+            showMessage('Informe seu e-mail para receber o link de recuperação.', false);
+            form.elements.email.focus();
+            return;
+          }
+          forgotPassword.disabled = true;
+          try {
+            const { error } = await window.NutrilevAuth.client.auth.resetPasswordForEmail(email, {
+              redirectTo: `${window.location.origin}${window.location.pathname}`,
+            });
+            if (error) throw error;
+            showMessage('Enviamos um link de recuperação para seu e-mail.', true);
+          } catch (error) {
+            showMessage(error.message || 'Não foi possível iniciar a recuperação.', false);
+          } finally {
+            forgotPassword.disabled = false;
+          }
+        });
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const values = new FormData(form);
+          submit.disabled = true;
+          showMessage('');
+          try {
+            const client = window.NutrilevAuth.client;
+            if (!client) throw new Error('O serviço de autenticação não está disponível.');
+            const email = String(values.get('email')).trim();
+            const password = String(values.get('password'));
+            let result;
+            if (signupMode) {
+              const name = String(values.get('name')).trim();
+              const passwordConfirmation = String(values.get('password_confirmation') || '');
+              if (!name) throw new Error('Informe seu nome completo.');
+              if (password !== passwordConfirmation) throw new Error('As senhas não coincidem.');
+              if (selectedPlanId === 'free') {
+                result = await client.auth.signUp({ email, password, options: { data: { full_name: name } } });
+              } else {
+                result = await client.functions.invoke('marketplace', {
+                  body: { action: 'create_pending_subscription', email, full_name: name, plan: selectedPlanId },
+                });
+                if (result.error) throw result.error;
+                const checkoutUrl = result.data?.checkout_url;
+                if (!checkoutUrl || !checkoutUrl.startsWith('https://')) {
+                  throw new Error(result.data?.error || 'Não foi possível iniciar o pagamento no Mercado Pago.');
+                }
+                window.location.href = checkoutUrl;
+                return;
+              }
+              if (result.error) throw result.error;
+              if (!result.data.session) {
+                showMessage('Conta criada. Confirme seu e-mail para entrar.', true);
+                return;
+              }
+            } else {
+              result = await client.auth.signInWithPassword({ email, password });
+              if (result.error) throw result.error;
+            }
+            await window.NutrilevAuth.redirectForRole();
+          } catch (error) {
+            showMessage(error.message || 'Não foi possível concluir o acesso.', false);
+          } finally {
+            submit.disabled = false;
+          }
+        });
+      }());
+    </script>
+  </body>
+</html>

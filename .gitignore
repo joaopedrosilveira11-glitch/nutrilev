@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+android/keystore.properties
+android/app/*.keystore
+android/app/*.jks
+Nutrilev-*.apk
+Nutrilev-*.aab

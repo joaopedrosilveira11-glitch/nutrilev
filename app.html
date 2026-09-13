@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="theme-color" content="#10251f" />
+    <meta name="description" content="Nutrilev para alunos: treino, alimentação e evolução em um só lugar." />
+    <title>Nutrilev | Área do aluno</title>
+    <link rel="icon" type="image/png" href="assets/logo-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="platform.css?v=74" />
+    <link rel="stylesheet" href="platform-density.css?v=4" />
+    <script>window.NUTRILEV_MOBILE_APP = true;</script>
+    <script src="assets/vendor/supabase.js"></script>
+    <script src="lib/config.js"></script>
+    <script src="utils/index.js"></script>
+    <script src="utils/html.js"></script>
+    <script src="components/index.js"></script>
+    <script src="components/ui.js"></script>
+    <script src="services/index.js"></script>
+    <script src="services/supabase.js"></script>
+    <script src="services/push-notifications.js"></script>
+    <script src="services/deep-links.js"></script>
+    <script src="services/platform-data.js?v=8"></script>
+    <script src="mobile/index.js"></script>
+    <script src="nutrition/index.js"></script>
+    <script src="workout/index.js"></script>
+    <script src="progress/index.js"></script>
+    <script src="academy/index.js"></script>
+    <script src="notifications/index.js"></script>
+    <script src="ai/index.js"></script>
+    <script src="auth/roles.js"></script>
+    <script src="hooks/session.js"></script>
+    <script src="types/domain.js"></script>
+    <script src="layouts/platform-shell.js"></script>
+    <script src="pages/routes.js"></script>
+    <script src="dashboard/index.js"></script>
+    <script src="student/index.js"></script>
+    <script src="features/dashboard/index.js"></script>
+    <script src="features/student/index.js"></script>
+  </head>
+  <body class="mobile-student-app">
+    <div class="platform-shell">
+      <aside class="sidebar" id="sidebar">
+        <a class="platform-brand" href="#/overview"><img src="assets/logo-icon.png" alt="" /><span>Nutrilev<small>área do aluno</small></span></a>
+        <nav class="main-nav" id="mainNav" aria-label="Navegação do aluno"></nav>
+        <div class="sidebar-bottom"><button id="logoutButton" type="button">Sair da conta</button></div>
+      </aside>
+      <main class="platform-main">
+        <header class="platform-topbar">
+          <button class="menu-button" id="menuButton" type="button" aria-label="Abrir menu"></button>
+          <a class="mobile-topbar-brand" href="landing.html" aria-label="Nutrilev início"><img src="assets/logo-icon.png" alt="Nutrilev" /></a>
+          <div><span class="eyebrow" id="pageEyebrow">VISÃO GERAL</span><h1 id="pageTitle">Seu dia mais leve</h1></div>
+          <div class="topbar-actions"><button class="icon-button" type="button" aria-label="Notificações"><i></i></button><div class="user-chip"><span id="userInitial">A</span><div><strong id="userName">Aluno</strong><small id="userRole">Aluno</small></div></div></div>
+        </header>
+        <section class="dashboard" id="dashboard" aria-live="polite" aria-busy="true">
+          <div class="dashboard-grid loading-state" aria-label="Carregando área do aluno">
+            <article class="card skeleton-card skeleton-hero"><span></span><span></span><span></span></article>
+            <article class="card skeleton-card skeleton-metric"><span></span><span></span><span></span></article>
+            <article class="card skeleton-card skeleton-section"><span></span><span></span><span></span><span></span></article>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="auth-overlay" id="authOverlay" hidden>
+      <main class="auth-layout" aria-label="Acesso ao Nutrilev">
+        <section class="auth-intro">
+          <a class="platform-brand" href="#/overview"><img src="assets/logo-icon.png" alt="" /><span>Nutrilev<small>plataforma</small></span></a>
+          <div>
+            <span class="eyebrow">PLATAFORMA NUTRILEV</span>
+            <h2>Seu próximo passo começa aqui.</h2>
+            <p>Entre para acompanhar sua evolução, cuidar dos seus treinos em um único lugar.</p>
+          </div>
+          <button class="auth-back-link" type="button" id="closeAuth">← Voltar para o app</button>
+        </section>
+        <section class="auth-panel">
+          <div class="auth-card">
+            <img src="assets/logo-icon.png" alt="" /><span class="eyebrow accent">ACESSO</span>
+            <div class="mobile-auth-tabs"><button type="button" class="active" data-auth-mode="login">Entrar</button><button type="button" data-auth-mode="signup">Criar conta</button></div>
+            <div data-auth-panel="login"><h2>Entre na sua conta.</h2><p>Seu perfil define automaticamente a área disponível.</p>
+              <form id="loginForm"><label>E-mail<input name="email" type="email" autocomplete="email" required placeholder="voce@exemplo.com" /></label><label>Senha<input name="password" type="password" autocomplete="current-password" required placeholder="Sua senha" /></label><p class="form-message" id="authMessage" hidden></p><button class="primary-button" type="submit">Entrar <span>→</span></button></form>
+              <div class="auth-links"><button type="button" data-auth-mode="recovery">Esqueci minha senha</button><button type="button" data-auth-mode="signup">Criar conta</button></div>
+            </div>
+            <div data-auth-panel="recovery" hidden><h2>Recupere sua senha.</h2><p>Enviaremos um link de recuperação para o seu e-mail.</p>
+              <form id="recoveryForm"><label>E-mail<input name="email" type="email" autocomplete="email" required placeholder="voce@exemplo.com" /></label><p class="form-message" id="recoveryMessage" hidden></p><button class="primary-button" type="submit">Enviar link <span>→</span></button></form>
+              <div class="auth-links"><button type="button" data-auth-mode="login">Voltar para entrar</button></div>
+            </div>
+            <div data-auth-panel="signup" hidden><h2>Crie sua conta.</h2><p>Comece sua jornada no Nutrilev.</p>
+              <form id="signupForm"><label>Nome completo<input name="full_name" type="text" autocomplete="name" required placeholder="Seu nome completo" /></label><label>E-mail<input name="email" type="email" autocomplete="email" required placeholder="voce@exemplo.com" /></label><label>Senha<input name="password" type="password" minlength="8" autocomplete="new-password" required placeholder="Mínimo de 8 caracteres" /></label><p class="form-message" id="signupMessage" hidden></p><button class="primary-button" type="submit">Criar conta <span>→</span></button></form>
+              <div class="auth-links"><button type="button" data-auth-mode="login">Já tenho uma conta</button></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="platform.js?v=77"></script>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+.platform-main{width:calc(100% - 256px)}
+.platform-topbar{padding-left:3%;padding-right:3%}
+.dashboard{width:100%;max-width:none;padding:24px 3% 48px}
+.dashboard-grid{width:100%;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.card{padding:20px}
+.welcome-card{grid-column:span 8;min-height:148px}
+.ai-feature-card{grid-column:span 4;min-width:0}
+.metric-card{grid-column:span 4}
+.section-card{grid-column:span 7}
+.side-card{grid-column:span 5}
+.page-plan .welcome-card{grid-column:span 8}
+.page-plan .kpi-grid{grid-column:span 4;grid-template-columns:repeat(2,minmax(0,1fr));align-self:stretch}
+.page-plan .kpi-grid .card{min-width:0}
+.page-plan .section-card{grid-column:span 6}
+.page-progress .section-card,.page-progress .table-card{grid-column:span 6}
+.page-assistant .section-card{grid-column:span 8}
+.page-academy .academy-join-card{grid-column:span 7}
+.page-academy .side-card{grid-column:span 5}
+.page-workouts .workout-builder,.page-workouts .table-card{grid-column:1/-1;min-width:0}
+.page-workouts #workoutEditorMount{grid-column:1/-1;min-width:0;width:100%}
+.page-workouts .workout-builder form,.page-workouts .exercise-list{min-width:0}
+.page-workouts .exercise-form-row{min-width:0}
+.assessment-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.assessment-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.assessment-grid{grid-template-columns:1fr}}
+.card-heading{margin-bottom:14px}
+.meal-list,.client-list,.activity-list{gap:6px}
+.meal-item,.client-item,.activity-item{padding:9px 0}
+.bar-chart{height:125px}
+@media(max-width:1100px){
+  .page-plan .welcome-card,.page-plan .kpi-grid{grid-column:1/-1}
+  .page-plan .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:900px){
+  .platform-main{width:calc(100% - 220px)}
+  .dashboard{padding-left:24px;padding-right:24px}
+  .page-plan .section-card,.page-progress .section-card,.page-progress .table-card{grid-column:span 6}
+}
+@media(max-width:680px){
+  .platform-main{width:100%}
+  .dashboard{padding:18px 20px 36px}
+  .ai-feature-card{grid-column:1/-1}
+  .page-plan .kpi-grid{grid-template-columns:1fr 1fr}
+  .page-plan .section-card,.page-progress .section-card,.page-progress .table-card{grid-column:1/-1}
+}
+
+/* The mobile shell must remain single-column even inside a wide WebView. */
+.mobile-student-app .dashboard-grid{grid-template-columns:minmax(0,1fr);gap:14px}
+.mobile-student-app .dashboard-grid>.card,
+.mobile-student-app .dashboard-grid>.kpi-grid,
+.mobile-student-app .ai-feature-card{grid-column:1/-1!important;min-width:0}
