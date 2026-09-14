@@ -47,7 +47,7 @@
         body: { action: 'access' },
       });
       if (error) throw error;
-      if (!data?.paid) throw new Error('O download do APK fica disponível após a aprovação do pagamento.');
+      if (!data?.paid) throw new Error('O download do APK fica disponível para assinaturas Plus ativas ou pagamentos aprovados.');
       if (typeof data.download_url !== 'string' || !data.download_url.startsWith('https://')) {
         throw new Error('O link seguro do APK não está disponível agora.');
       }

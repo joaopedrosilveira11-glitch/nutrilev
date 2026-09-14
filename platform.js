@@ -110,7 +110,7 @@
   const students = [];
   const roleLabels = { student: 'Aluno', coach: 'Coach / Personal', admin: 'Administração' };
   const navByRole = {
-    student: [['overview', '⌂', 'Visão geral'], ['plan', '☰', 'Meu plano'], ['academy', '▣', 'Minha Academia'], ['progress', '◔', 'Meu progresso'], ['assistant', '✦', 'Nutri IA']],
+    student: [['overview', '⌂', 'Visão geral'], ['plan', '☰', 'Meu plano'], ['academy', '▣', 'Minha Academia'], ['progress', '◔', 'Meu progresso'], ['assistant', '✦', 'Nutri IA'], ['profile', '◉', 'Meu perfil']],
     coach: [['overview', '⌂', 'Dashboard'], ['clients', '◎', 'Meus alunos'], ['workouts', '☰', 'Treinos'], ['exercises', '◇', 'Exercícios'], ['evolution', '◔', 'Evolução'], ['notifications', '♢', 'Notificações'], ['profile', '◉', 'Perfil']],
     admin: [['overview', '⌂', 'Dashboard'], ['members', '◎', 'Alunos'], ['coaches', '♧', 'Coaches'], ['gym', '▣', 'Academia'], ['attendance', '◷', 'Frequência'], ['checkins', '✓', 'Check-ins'], ['reports', '▤', 'Relatórios'], ['settings', '⚙', 'Configurações']],
   };
@@ -820,12 +820,18 @@
     document.getElementById('downloadApkButton')?.addEventListener('click', async (event) => {
       const button = event.currentTarget;
       const feedback = document.getElementById('apkDownloadFeedback');
+      const downloadWindow = window.open('', '_blank');
       button.disabled = true;
       feedback.hidden = true;
       try {
         const downloadUrl = await dataService.downloadApk();
-        window.location.assign(downloadUrl);
+        if (downloadWindow) {
+          downloadWindow.location.href = downloadUrl;
+        } else {
+          window.location.assign(downloadUrl);
+        }
       } catch (error) {
+        downloadWindow?.close();
         feedback.textContent = error.message || 'Não foi possível preparar o download do APK.';
         feedback.hidden = false;
       } finally {
