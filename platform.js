@@ -62,7 +62,12 @@
       remoteData.progress = progress;
       remoteData.plan = plan;
       remoteData.hydration = hydration;
-      remoteData.notifications = await dataService.notifications();
+      try {
+        remoteData.notifications = await dataService.notifications();
+      } catch (error) {
+        console.error('Optional student data load failed: notifications', error);
+        remoteData.notifications = [];
+      }
       remoteData.profile = profile;
       lastRefreshAt = Date.now();
       setUserIdentity({ ...user, user_metadata: { ...user.user_metadata, full_name: profile?.full_name || user.user_metadata?.full_name } });
@@ -1627,22 +1632,44 @@
       if (hasCachedData) render();
       try {
         if (state.role === 'student') {
-          const [profile, membership, subscription, workouts, progress, plan, hydration] = await Promise.all([
-            dataService.studentProfile(),
-            dataService.membership(),
-            dataService.subscription(),
-            dataService.assignedWorkouts(),
-            dataService.studentProgress(),
-            dataService.studentPlan(),
-            dataService.hydrationHistory(),
-          ]);
+          const requiredStudentData = [
+            ['profile', dataService.studentProfile(), null],
+            ['membership', dataService.membership(), null],
+          ];
+          const requiredResults = await Promise.all(requiredStudentData.map(async ([name, request, fallback]) => {
+            try {
+              return [name, await request];
+            } catch (error) {
+              console.error(`Student data load failed: ${name}`, error);
+              return [name, fallback];
+            }
+          }));
+          const requiredData = Object.fromEntries(requiredResults);
+          const profile = requiredData.profile;
+          const membership = requiredData.membership;
+          const optionalStudentData = [
+            ['subscription', dataService.subscription(), { plan: 'free', status: 'active' }],
+            ['workouts', dataService.assignedWorkouts(), []],
+            ['progress', dataService.studentProgress(), { measurements: [], workoutLogs: [], goals: [] }],
+            ['plan', dataService.studentPlan(), { entries: [], meals: [], goals: [], foods: [] }],
+            ['hydration', dataService.hydrationHistory(), []],
+          ];
+          const optionalResults = await Promise.all(optionalStudentData.map(async ([name, request, fallback]) => {
+            try {
+              return [name, await request];
+            } catch (error) {
+              console.error(`Optional student data load failed: ${name}`, error);
+              return [name, fallback];
+            }
+          }));
+          const optionalData = Object.fromEntries(optionalResults);
           remoteData.profile = profile;
           remoteData.membership = membership;
-          remoteData.subscription = subscription;
-          remoteData.workouts = workouts;
-          remoteData.progress = progress;
-          remoteData.plan = plan;
-          remoteData.hydration = hydration;
+          remoteData.subscription = optionalData.subscription;
+          remoteData.workouts = optionalData.workouts;
+          remoteData.progress = optionalData.progress;
+          remoteData.plan = optionalData.plan;
+          remoteData.hydration = optionalData.hydration;
           remoteData.notifications = await dataService.notifications();
           remoteData.academyDetails = null;
           setUserIdentity({ ...data.session.user, user_metadata: { ...data.session.user.user_metadata, full_name: profile?.full_name || data.session.user.user_metadata?.full_name } });
