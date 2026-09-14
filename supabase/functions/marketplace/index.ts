@@ -56,11 +56,16 @@ async function createPendingSubscription(request: Request, body: Record<string, 
   const email = String(body.email || "").trim().toLowerCase();
   const fullName = String(body.full_name || "").trim();
   const planKey = typeof body.plan === "string" && body.plan in PLANS ? body.plan : "plus";
+  const academyName = String(body.academy_name || "").trim();
   const plan = selectedPlan(planKey);
   if (!email || !fullName) throw new Error("Nome e e-mail são obrigatórios.");
+  if (["academy-start", "academy-pro", "academy-business", "enterprise"].includes(planKey) && academyName.length < 2) {
+    throw new Error("O nome da academia é obrigatório para este plano.");
+  }
   const { data: pending, error: pendingError } = await admin.from("pending_signups").insert({
     email,
     full_name: fullName,
+    academy_name: academyName || null,
     plan: planKey,
   }).select("id").single();
   if (pendingError) throw pendingError;
@@ -93,14 +98,14 @@ async function completePendingSignup(request: Request, body: Record<string, unkn
     throw new Error("Link de pagamento inválido. Retorne ao site e inicie o cadastro novamente.");
   }
   const { data: pending, error } = await admin.from("pending_signups")
-    .select("id,email,full_name,status,plan,approved_at").eq("id", pendingId).maybeSingle();
+    .select("id,email,full_name,academy_name,status,plan,approved_at").eq("id", pendingId).maybeSingle();
   if (error) throw error;
   if (!pending || pending.status !== "approved") throw new Error("O pagamento ainda não foi aprovado.");
   const { data: created, error: createError } = await admin.auth.admin.createUser({
     email: pending.email,
     password,
     email_confirm: false,
-    user_metadata: { full_name: pending.full_name },
+    user_metadata: { full_name: pending.full_name, academy_name: pending.academy_name || null },
   });
   if (createError) throw createError;
   const { error: purchaseError } = await admin.from("apk_purchases").insert({

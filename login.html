@@ -34,6 +34,7 @@
           <p class="selected-plan" id="selectedPlan" hidden></p>
           <form id="loginForm">
             <label class="signup-field" hidden>Nome completo<input name="name" type="text" autocomplete="name" placeholder="Seu nome completo" /></label>
+            <label class="academy-name-field" hidden>Nome da academia<input name="academy_name" type="text" autocomplete="organization" placeholder="Nome da sua academia" /></label>
             <label>E-mail<input name="email" type="email" autocomplete="email" placeholder="voce@exemplo.com" required /></label>
             <label>Senha<input name="password" type="password" autocomplete="current-password" minlength="6" placeholder="Sua senha" required /></label>
             <label class="signup-confirm-field" hidden>Confirmar senha<input name="password_confirmation" type="password" autocomplete="new-password" minlength="6" placeholder="Confirme sua senha" /></label>
@@ -57,6 +58,7 @@
         const toggleSignup = document.getElementById('toggleSignupButton');
         const forgotPassword = document.getElementById('forgotPasswordButton');
         const signupField = document.querySelector('.signup-field');
+        const academyNameField = document.querySelector('.academy-name-field');
         const signupConfirmField = document.querySelector('.signup-confirm-field');
         const coachInviteField = document.querySelector('.coach-invite-field');
         const title = document.getElementById('formTitle');
@@ -74,6 +76,7 @@
         const requestedPlan = new URLSearchParams(window.location.search).get('plan');
         let selectedPlanId = planCatalog[requestedPlan] ? requestedPlan : 'free';
         let signupMode = new URLSearchParams(window.location.search).get('signup') === '1';
+        const academyPlans = new Set(['academy-start', 'academy-pro', 'academy-business', 'enterprise']);
 
         function showMessage(text, success) {
           message.textContent = text;
@@ -85,6 +88,9 @@
           signupMode = value;
           signupField.hidden = !signupMode;
           signupField.querySelector('input').required = signupMode;
+          const requiresAcademyName = signupMode && academyPlans.has(selectedPlanId);
+          academyNameField.hidden = !requiresAcademyName;
+          academyNameField.querySelector('input').required = requiresAcademyName;
           signupConfirmField.hidden = !signupMode;
           signupConfirmField.querySelector('input').required = signupMode;
           coachInviteField.hidden = !signupMode;
@@ -154,15 +160,17 @@
             let result;
             if (signupMode) {
               const name = String(values.get('name')).trim();
+              const academyName = String(values.get('academy_name') || '').trim();
               const passwordConfirmation = String(values.get('password_confirmation') || '');
               const coachInvitation = String(values.get('coach_invitation') || '').trim().toUpperCase();
               if (!name) throw new Error('Informe seu nome completo.');
+              if (academyPlans.has(selectedPlanId) && !academyName) throw new Error('Informe o nome da academia.');
               if (password !== passwordConfirmation) throw new Error('As senhas não coincidem.');
               if (selectedPlanId === 'free') {
                 result = await client.auth.signUp({ email, password, options: { data: { full_name: name } } });
               } else {
                 result = await client.functions.invoke('marketplace', {
-                  body: { action: 'create_pending_subscription', email, full_name: name, plan: selectedPlanId },
+                  body: { action: 'create_pending_subscription', email, full_name: name, academy_name: academyName, plan: selectedPlanId },
                 });
                 if (result.error) throw result.error;
                 const checkoutUrl = result.data?.checkout_url;
