@@ -811,7 +811,22 @@
     const email = profile.email || '';
     const avatar = profile.avatar_url ? `<img src="${esc(profile.avatar_url)}" alt="Foto de perfil de ${esc(name)}" />` : esc(name.charAt(0).toUpperCase());
     const avatarClass = profile.avatar_url ? ' has-photo' : '';
-    shell('Meu perfil', 'MINHA CONTA', `<article class="card profile-hero"><div><span class="eyebrow">CONTA NUTRILEV</span><h2>${esc(name)}</h2><p>Aluno Nutrilev${email ? ` · ${esc(email)}` : ''}</p></div><div class="student-avatar student-avatar-large${avatarClass}">${avatar}</div></article><article class="card section-card profile-edit-card">${cardHeading('Dados pessoais')}<form id="profilePhotoForm" class="profile-photo-form"><div class="student-avatar student-avatar-medium${avatarClass}">${avatar}</div><div><label class="outline-button profile-photo-button">Escolher foto<input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden /></label><p class="admin-copy">JPG, PNG ou WebP até 5 MB.</p></div></form><form id="profileForm" class="settings-list"><label>Nome completo<input name="full_name" type="text" value="${esc(name)}" autocomplete="name" required minlength="2" /></label><label>E-mail<input type="email" value="${esc(email || 'E-mail da conta')}" disabled /></label><p class="form-message" id="profileFeedback" hidden></p><button class="primary-button" type="submit">Salvar perfil <span>→</span></button></form></article><article class="card section-card"><div class="card-heading"><h3>Segurança</h3></div><p class="admin-copy">Sua sessão é mantida com segurança neste dispositivo e sincronizada com a sua conta Nutrilev.</p><button class="outline-button" type="button" id="profileLogoutButton">Sair da conta</button></article>`);
+    shell('Meu perfil', 'MINHA CONTA', `<article class="card profile-hero"><div><span class="eyebrow">CONTA NUTRILEV</span><h2>${esc(name)}</h2><p>Aluno Nutrilev${email ? ` · ${esc(email)}` : ''}</p></div><div class="student-avatar student-avatar-large${avatarClass}">${avatar}</div></article><article class="card section-card profile-edit-card">${cardHeading('Dados pessoais')}<form id="profilePhotoForm" class="profile-photo-form"><div class="student-avatar student-avatar-medium${avatarClass}">${avatar}</div><div><label class="outline-button profile-photo-button">Escolher foto<input id="profilePhotoInput" type="file" accept="image/png,image/jpeg,image/webp" hidden /></label><p class="admin-copy">JPG, PNG ou WebP até 5 MB.</p></div></form><form id="profileForm" class="settings-list"><label>Nome completo<input name="full_name" type="text" value="${esc(name)}" autocomplete="name" required minlength="2" /></label><label>E-mail<input type="email" value="${esc(email || 'E-mail da conta')}" disabled /></label><p class="form-message" id="profileFeedback" hidden></p><button class="primary-button" type="submit">Salvar perfil <span>→</span></button></form></article><article class="card section-card"><div class="card-heading"><h3>Usar no aplicativo</h3></div><p class="admin-copy">Prefere usar o Nutrilev instalado no Android? Baixe o APK pela sua conta. O link é temporário e só funciona para assinaturas aprovadas.</p><p class="form-message" id="apkDownloadFeedback" hidden></p><button class="outline-button" type="button" id="downloadApkButton">Baixar APK <span>↓</span></button></article><article class="card section-card"><div class="card-heading"><h3>Segurança</h3></div><p class="admin-copy">Sua sessão é mantida com segurança neste dispositivo e sincronizada com a sua conta Nutrilev.</p><button class="outline-button" type="button" id="profileLogoutButton">Sair da conta</button></article>`);
+    document.getElementById('downloadApkButton')?.addEventListener('click', async (event) => {
+      const button = event.currentTarget;
+      const feedback = document.getElementById('apkDownloadFeedback');
+      button.disabled = true;
+      feedback.hidden = true;
+      try {
+        const downloadUrl = await dataService.downloadApk();
+        window.location.assign(downloadUrl);
+      } catch (error) {
+        feedback.textContent = error.message || 'Não foi possível preparar o download do APK.';
+        feedback.hidden = false;
+      } finally {
+        button.disabled = false;
+      }
+    });
     document.getElementById('profilePhotoInput')?.addEventListener('change', async (event) => {
       const file = event.target.files?.[0];
       if (!file) return;

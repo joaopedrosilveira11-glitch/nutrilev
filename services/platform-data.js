@@ -41,6 +41,18 @@
       }
       return { plan: 'free', status: 'active' };
     },
+    async downloadApk() {
+      if (!client) throw new Error('O serviço de acesso não está disponível.');
+      const { data, error } = await client.functions.invoke('marketplace', {
+        body: { action: 'access' },
+      });
+      if (error) throw error;
+      if (!data?.paid) throw new Error('O download do APK fica disponível após a aprovação do pagamento.');
+      if (typeof data.download_url !== 'string' || !data.download_url.startsWith('https://')) {
+        throw new Error('O link seguro do APK não está disponível agora.');
+      }
+      return data.download_url;
+    },
     async notifications() {
       const user = await api.user();
       if (!user) return [];
