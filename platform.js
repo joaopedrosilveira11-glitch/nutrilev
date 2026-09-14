@@ -7,6 +7,8 @@
   const dataService = window.Nutrilev.services.platformData;
   const state = { role: visualRole(forcedRole || 'student'), remote: false, dataError: null };
   const remoteData = { membership: null, academyDetails: null, workouts: null, students: null, coaches: null, checkins: null, progress: null, plan: null, subscription: { plan: 'free' }, hydration: [], notifications: [], coachStudents: [], exercises: [], evolution: [], gym: null, adminStats: null, profile: null };
+  const COACH_PLAN_LIMITS = { free: 0, plus: 0, 'academy-start': 1, 'academy-pro': 3, 'academy-business': 10, enterprise: 1000000 };
+  const COACH_PLAN_NAMES = { free: 'Free', plus: 'Plus', 'academy-start': 'Academia Start', 'academy-pro': 'Academia Pro', 'academy-business': 'Academia Business', enterprise: 'Enterprise' };
   const PLAN_ENTITLEMENTS = {
     free: new Set(['meal_tracking', 'hydration', 'basic_calorie_goals', 'assigned_workouts']),
     plus: new Set(['meal_tracking', 'hydration', 'basic_calorie_goals', 'assigned_workouts', 'nutri_ai', 'complete_progress', 'unlimited_history']),
@@ -22,6 +24,8 @@
     const nextDay = new Date();
     nextDay.setHours(24, 0, 2, 0);
     midnightRefreshTimer = window.setTimeout(async () => {
+      remoteData.plan = { entries: [], meals: [], goals: remoteData.plan?.goals || [], foods: remoteData.plan?.foods || [] };
+      render();
       await refreshStudentData(true);
       scheduleMidnightRefresh();
     }, Math.max(1000, nextDay.getTime() - Date.now()));
@@ -62,12 +66,7 @@
       remoteData.progress = progress;
       remoteData.plan = plan;
       remoteData.hydration = hydration;
-      try {
-        remoteData.notifications = await dataService.notifications();
-      } catch (error) {
-        console.error('Optional student data load failed: notifications', error);
-        remoteData.notifications = [];
-      }
+      remoteData.notifications = await dataService.notifications();
       remoteData.profile = profile;
       lastRefreshAt = Date.now();
       setUserIdentity({ ...user, user_metadata: { ...user.user_metadata, full_name: profile?.full_name || user.user_metadata?.full_name } });
@@ -210,8 +209,14 @@
     document.getElementById('mainNav').innerHTML = links.map(([id, icon, label]) => `<a class="nav-link" aria-label="${label}" href="#/${id}"><span aria-hidden="true">${icon}</span><b>${label}</b></a>`).join('');
     document.querySelectorAll('#mainNav .nav-link').forEach((link) => link.classList.toggle('active', link.getAttribute('href') === `#/${page()}`));
   }
+  function updateMobileShell() {
+    const isMobileStudent = state.role === 'student'
+      && (window.NUTRILEV_MOBILE_APP || window.matchMedia('(max-width: 680px)').matches);
+    document.body.classList.toggle('mobile-student-app', isMobileStudent);
+  }
   function shell(title, eyebrow, content) {
     stopWorkoutTimers();
+    updateMobileShell();
     document.getElementById('pageTitle').textContent = title;
     document.getElementById('pageEyebrow').textContent = eyebrow;
     renderNav();
@@ -870,7 +875,6 @@
         feedback.textContent = 'Perfil atualizado com sucesso.';
         feedback.className = 'form-message success';
         feedback.hidden = false;
-        studentAccount();
       } catch (error) {
         feedback.textContent = error.message || 'Não foi possível atualizar o perfil.';
         feedback.className = 'form-message';
@@ -1378,7 +1382,10 @@
   }
   function adminCoachesView() {
     const coaches = getAdminCoaches();
-    return `<article class="card table-card admin-coaches-card">${cardHeading('Gerenciamento de coaches')}<div class="admin-member-toolbar"><p class="admin-copy">O vínculo do Coach com a academia é separado da conta pessoal e do histórico profissional no Nutrilev.</p><form id="inviteCoachForm" class="invite-student-form"><input name="email" type="email" required placeholder="E-mail do Coach" aria-label="E-mail do Coach" /><button class="primary-button" type="submit">Criar convite</button></form><p class="form-message success" id="coachInviteFeedback" hidden></p></div><div class="admin-coach-list">${coaches.length ? coaches.map((coach) => `<div class="admin-coach-row" data-coach-id="${coach.id}"><div class="admin-coach-main"><span class="student-avatar">${esc(coach.name.split(' ').map((part) => part[0]).slice(0, 2).join(''))}</span><div><strong>${esc(coach.name)}</strong><small>${esc(coach.email)}</small></div></div><span class="status ${coach.status !== 'active' ? 'pending' : ''}">${coach.status === 'active' ? 'Ativo' : 'Convite pendente'}</span><span class="status ${coach.linked ? '' : 'pending'}">${coach.linked ? 'Na academia' : 'Removido'}</span><button class="outline-button" type="button" data-coach-action="students" data-coach-id="${coach.id}">${coach.students} alunos</button><button class="outline-button" type="button" data-coach-action="permissions" data-coach-id="${coach.id}">Permissões</button><button class="outline-button" type="button" data-coach-action="toggle" data-coach-id="${coach.id}">${coach.status === 'active' ? 'Desativar' : 'Ativar'}</button><button class="outline-button danger-button" type="button" data-coach-action="${coach.linked ? 'remove' : 'add'}" data-coach-id="${coach.id}">${coach.linked ? 'Remover da academia' : 'Adicionar à academia'}</button></div>`).join('') : '<p class="empty-state">Nenhum coach real cadastrado nesta academia.</p>'}</div><div class="admin-coach-panel" id="adminCoachPanel" hidden></div></article>`;
+    const plan = remoteData.subscription?.plan || 'free';
+    const limit = COACH_PLAN_LIMITS[plan] ?? 0;
+    const atLimit = coaches.length >= limit;
+    return `<article class="card table-card admin-coaches-card">${cardHeading('Gerenciamento de coaches')}<div class="admin-member-toolbar"><p class="admin-copy">Seu plano <strong>${esc(COACH_PLAN_NAMES[plan] || plan)}</strong> permite <strong>${limit >= 1000000 ? 'coaches ilimitados' : `${limit} Coach(s)`}</strong>. O pagamento precisa estar autorizado para liberar novos convites.</p><form id="inviteCoachForm" class="invite-student-form"><input name="email" type="email" required placeholder="E-mail do Coach" aria-label="E-mail do Coach" ${atLimit ? 'disabled' : ''} /><button class="primary-button" type="submit" ${atLimit ? 'disabled' : ''}>${atLimit ? 'Limite atingido' : 'Criar conta Coach'}</button></form><p class="form-message success" id="coachInviteFeedback" hidden></p></div><div class="admin-coach-list">${coaches.length ? coaches.map((coach) => `<div class="admin-coach-row" data-coach-id="${coach.id}"><div class="admin-coach-main"><span class="student-avatar">${esc(coach.name.split(' ').map((part) => part[0]).slice(0, 2).join(''))}</span><div><strong>${esc(coach.name)}</strong><small>${esc(coach.email)}</small></div></div><span class="status ${coach.status !== 'active' ? 'pending' : ''}">${coach.status === 'active' ? 'Ativo' : 'Convite pendente'}</span><span class="status ${coach.linked ? '' : 'pending'}">${coach.linked ? 'Na academia' : 'Removido'}</span><button class="outline-button" type="button" data-coach-action="students" data-coach-id="${coach.id}">${coach.students} alunos</button><button class="outline-button" type="button" data-coach-action="permissions" data-coach-id="${coach.id}">Permissões</button><button class="outline-button" type="button" data-coach-action="toggle" data-coach-id="${coach.id}">${coach.status === 'active' ? 'Desativar' : 'Ativar'}</button><button class="outline-button danger-button" type="button" data-coach-action="${coach.linked ? 'remove' : 'add'}" data-coach-id="${coach.id}">${coach.linked ? 'Remover da academia' : 'Adicionar à academia'}</button></div>`).join('') : '<p class="empty-state">Nenhum coach real cadastrado nesta academia.</p>'}</div><div class="admin-coach-panel" id="adminCoachPanel" hidden></div></article>`;
   }
   function adminOverview() {
     const stats = remoteData.adminStats || { members: 0, coaches: 0, workouts: 0, checkins: 0, completedWorkouts: 0 };
@@ -1420,9 +1427,13 @@
       const email = event.target.elements.email.value.trim().toLowerCase();
       if (state.remote) {
         try {
-          await dataService.invite(await dataService.gymId(), email, 'email');
+          const invitation = await dataService.inviteCoach(email);
           event.target.reset();
-          adminSection();
+          const feedback = document.getElementById('coachInviteFeedback');
+          if (feedback) {
+            feedback.textContent = `Convite criado para ${email}. Envie o código ${invitation.code} ao Coach.`;
+            feedback.hidden = false;
+          }
         } catch (error) {
           const feedback = document.getElementById('coachInviteFeedback');
           if (feedback) { feedback.textContent = error.message || 'Não foi possível criar o convite.'; feedback.hidden = false; }
@@ -1494,7 +1505,7 @@
     const sections = {
       members: ['Alunos', 'GESTÃO DE ALUNOS', adminMembersView()],
       coaches: ['Coaches', 'EQUIPE PROFISSIONAL', adminCoachesView()],
-      gym: ['Academia', 'DADOS DA ACADEMIA', `${adminAcademyView()}<article class="card section-card">${cardHeading(remoteData.gym?.name || 'Academia')}<div class="profile-facts admin-facts"><div><span>Plano</span><strong>Não informado</strong></div><div><span>Membros</span><strong>${remoteData.adminStats?.members || 0}</strong></div><div><span>Coaches</span><strong>${remoteData.adminStats?.coaches || 0}</strong></div><div><span>Status</span><strong>${remoteData.gym?.active ? 'Ativa' : 'Inativa'}</strong></div></div></article>`],
+      gym: ['Academia', 'DADOS DA ACADEMIA', `${adminAcademyView()}<article class="card section-card">${cardHeading(remoteData.gym?.name || 'Academia')}<div class="profile-facts admin-facts"><div><span>Plano</span><strong>${esc(COACH_PLAN_NAMES[remoteData.subscription?.plan] || remoteData.subscription?.plan || 'Free')}</strong></div><div><span>Membros</span><strong>${remoteData.adminStats?.members || 0}</strong></div><div><span>Coaches</span><strong>${remoteData.adminStats?.coaches || 0}</strong></div><div><span>Status</span><strong>${remoteData.gym?.active ? 'Ativa' : 'Inativa'}</strong></div></div></article>`],
       attendance: ['Frequência', 'ACOMPANHAMENTO DE PRESENÇA', `<article class="card section-card">${cardHeading('Check-ins registrados')}<div class="kpi-number">${currentCheckins.length}</div><span class="metric-meta">Eventos disponíveis no Supabase</span></article><article class="card side-card">${cardHeading('Origem dos check-ins')}<div class="source-summary">${Object.entries(checkinSourceLabels).map(([source, label]) => `<div><span>${label}</span><strong>${currentCheckins.filter((item) => item.source === source).length}</strong></div>`).join('')}</div><p class="admin-copy">A frequência será calculada conforme os eventos de acesso forem registrados.</p></article>`],
       checkins: ['Check-ins', 'EVENTOS DE ACESSO', `<article class="card table-card">${cardHeading('Check-ins recebidos')}<p class="admin-copy">O Nutrilev não realiza reconhecimento facial. Estes eventos são preparados para receber dados de academias e integrações externas.</p><div class="admin-list">${currentCheckins.map((checkin) => `<div class="admin-list-row"><div><strong>${esc(checkin.name)}</strong><small>${esc(checkin.timestamp)} · ${esc(checkinSourceLabels[checkin.source])}</small></div><code>${esc(checkin.externalId)}</code><span class="status">Registrado</span></div>`).join('')}</div></article><article class="card section-card">${cardHeading('Contrato de integração')}<div class="integration-flow"><span>Controle de acesso</span><b>→</b><span>API / Webhook</span><b>→</b><span>Nutrilev</span><b>→</b><span>Check-in do aluno</span></div><p class="admin-copy">Cada evento deve informar <code>user_id</code>, <code>gym_id</code>, <code>timestamp</code>, <code>source</code> e <code>external_id</code>.</p></article>`],
       reports: ['Relatórios', 'RELATÓRIOS DA ACADEMIA', `<div class="kpi-grid"><article class="card"><span class="kpi-label">Alunos ativos</span><div class="kpi-number">${remoteData.adminStats?.members || 0}</div></article><article class="card"><span class="kpi-label">Coaches ativos</span><div class="kpi-number">${remoteData.adminStats?.coaches || 0}</div></article><article class="card"><span class="kpi-label">Treinos ativos</span><div class="kpi-number">${remoteData.adminStats?.workouts || 0}</div></article><article class="card"><span class="kpi-label">Check-ins</span><div class="kpi-number">${remoteData.adminStats?.checkins || 0}</div></article></div><article class="card table-card">${cardHeading('Relatórios')}<p class="empty-state">Os relatórios serão disponibilizados quando houver dados suficientes na academia.</p></article>`],
@@ -1638,44 +1649,22 @@
       if (hasCachedData) render();
       try {
         if (state.role === 'student') {
-          const requiredStudentData = [
-            ['profile', dataService.studentProfile(), null],
-            ['membership', dataService.membership(), null],
-          ];
-          const requiredResults = await Promise.all(requiredStudentData.map(async ([name, request, fallback]) => {
-            try {
-              return [name, await request];
-            } catch (error) {
-              console.error(`Student data load failed: ${name}`, error);
-              return [name, fallback];
-            }
-          }));
-          const requiredData = Object.fromEntries(requiredResults);
-          const profile = requiredData.profile;
-          const membership = requiredData.membership;
-          const optionalStudentData = [
-            ['subscription', dataService.subscription(), { plan: 'free', status: 'active' }],
-            ['workouts', dataService.assignedWorkouts(), []],
-            ['progress', dataService.studentProgress(), { measurements: [], workoutLogs: [], goals: [] }],
-            ['plan', dataService.studentPlan(), { entries: [], meals: [], goals: [], foods: [] }],
-            ['hydration', dataService.hydrationHistory(), []],
-          ];
-          const optionalResults = await Promise.all(optionalStudentData.map(async ([name, request, fallback]) => {
-            try {
-              return [name, await request];
-            } catch (error) {
-              console.error(`Optional student data load failed: ${name}`, error);
-              return [name, fallback];
-            }
-          }));
-          const optionalData = Object.fromEntries(optionalResults);
+          const [profile, membership, subscription, workouts, progress, plan, hydration] = await Promise.all([
+            dataService.studentProfile(),
+            dataService.membership(),
+            dataService.subscription(),
+            dataService.assignedWorkouts(),
+            dataService.studentProgress(),
+            dataService.studentPlan(),
+            dataService.hydrationHistory(),
+          ]);
           remoteData.profile = profile;
           remoteData.membership = membership;
-          remoteData.subscription = optionalData.subscription;
-          remoteData.workouts = optionalData.workouts;
-          remoteData.progress = optionalData.progress;
-          remoteData.plan = optionalData.plan;
-          remoteData.hydration = optionalData.hydration;
+          remoteData.subscription = subscription;
+          remoteData.workouts = workouts;
+          remoteData.progress = progress;
+          remoteData.plan = plan;
+          remoteData.hydration = hydration;
           remoteData.notifications = await dataService.notifications();
           remoteData.academyDetails = null;
           setUserIdentity({ ...data.session.user, user_metadata: { ...data.session.user.user_metadata, full_name: profile?.full_name || data.session.user.user_metadata?.full_name } });
@@ -1692,6 +1681,7 @@
           remoteData.notifications = await dataService.notifications();
         }
         if (state.role === 'admin') {
+          remoteData.subscription = await dataService.subscription();
           remoteData.students = await dataService.adminStudents();
           remoteData.coaches = await dataService.adminCoaches();
           remoteData.checkins = await dataService.checkins();
@@ -1744,6 +1734,7 @@
     menuButton?.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
   });
   document.getElementById('mainNav')?.addEventListener('click', closeMobileMenu);
+  window.addEventListener('resize', updateMobileShell);
   document.addEventListener('click', (event) => {
     if (!sidebar?.classList.contains('open')) return;
     const target = event.target;

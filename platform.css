@@ -119,6 +119,9 @@
 .mobile-student-app .dashboard-grid{grid-template-columns:minmax(0,1fr);gap:14px}
 .mobile-student-app .dashboard-grid>.card,
 .mobile-student-app .dashboard-grid>.kpi-grid{grid-column:1/-1!important;min-width:0}
+.mobile-student-app .card-heading{gap:12px;align-items:flex-start}
+.mobile-student-app .card-heading h3{min-width:0}
+.mobile-student-app .card-heading a,.mobile-student-app .card-heading .link-button{flex:0 0 auto;white-space:nowrap}
 .mobile-student-app .welcome-card{align-items:flex-start;min-height:0}
 .mobile-student-app .welcome-card>div:first-child{min-width:0}
 .mobile-student-app .welcome-card h2{font-size:clamp(22px,6vw,28px);line-height:1.15}
@@ -135,7 +138,7 @@
   .mobile-student-app .platform-topbar>div:nth-child(2){min-width:0}
   .mobile-student-app #pageTitle{font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mobile-student-app .topbar-actions{flex-shrink:0}
-  .mobile-student-app .platform-main{padding-bottom:env(safe-area-inset-bottom)}
+  .mobile-student-app .platform-main{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
   .mobile-student-app .sidebar{
     top:0;
     bottom:0;

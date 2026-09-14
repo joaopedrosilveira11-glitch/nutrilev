@@ -57,7 +57,6 @@
       const user = await api.user();
       if (!user) return [];
       const { data, error } = await client.from('notifications').select('id, title, body, is_read, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50);
-      if (error && isMissingTableError(error, 'notifications')) return [];
       if (error) throw error;
       return (data || []).map((item) => ({ ...item, read_at: item.is_read ? item.created_at : null }));
     },
@@ -310,9 +309,11 @@
       if (!user) return { entries: [], meals: [], goals: [] };
       const start = new Date();
       start.setHours(0, 0, 0, 0);
+      const end = new Date(start);
+      end.setDate(end.getDate() + 1);
       const [entries, meals, goals, foods] = await Promise.all([
-        client.from('nutrition_entries').select('id, consumed_at, food_name, calories, protein_grams, source, source_id').eq('user_id', user.id).gte('consumed_at', start.toISOString()).order('consumed_at', { ascending: true }),
-        client.from('meals').select('id, name, consumed_at, created_at').eq('user_id', user.id).gte('consumed_at', start.toISOString()).order('consumed_at', { ascending: true }),
+        client.from('nutrition_entries').select('id, consumed_at, food_name, calories, protein_grams, source, source_id').eq('user_id', user.id).gte('consumed_at', start.toISOString()).lt('consumed_at', end.toISOString()).order('consumed_at', { ascending: true }),
+        client.from('meals').select('id, name, consumed_at, created_at').eq('user_id', user.id).gte('consumed_at', start.toISOString()).lt('consumed_at', end.toISOString()).order('consumed_at', { ascending: true }),
         client.from('goals').select('type, name, target_value, unit').eq('user_id', user.id).eq('status', 'active').in('type', ['calories', 'protein']),
         client.from('foods').select('id, name, source_id, serving_size, serving_unit, calories, protein_grams').order('name').limit(100),
       ]);
@@ -587,7 +588,9 @@
       return data.academy_id;
     },
     async adminCoaches() {
-      const { data, error } = await client.from('coaches').select('id, gym_id, active, permissions, created_at').order('created_at', { ascending: false });
+      const gymId = await api.gymId();
+      if (!gymId) return [];
+      const { data, error } = await client.from('coaches').select('id, gym_id, active, permissions, created_at').eq('gym_id', gymId).order('created_at', { ascending: false });
       if (error) throw error;
       const ids = (data || []).map((row) => row.id);
       if (!ids.length) return [];
@@ -595,6 +598,21 @@
       if (profiles.error) throw profiles.error;
       const byId = new Map((profiles.data || []).map((profile) => [profile.id, profile]));
       return (data || []).map((row) => ({ id: row.id, gymId: row.gym_id, name: byId.get(row.id)?.full_name || 'Coach', email: '', status: row.active ? 'active' : 'inactive', linked: row.active, students: 0, permissions: Object.keys(row.permissions || {}) }));
+    },
+    async inviteCoach(email) {
+      const gymId = await api.gymId();
+      if (!gymId) throw new Error('Sua conta não está vinculada a uma academia.');
+      const { data, error } = await client.rpc('create_coach_invitation', {
+        target_gym_id: gymId,
+        coach_email: String(email || '').trim().toLowerCase(),
+      });
+      if (error) throw error;
+      return Array.isArray(data) ? data[0] : data;
+    },
+    async acceptCoachInvitation(code) {
+      const { data, error } = await client.rpc('accept_coach_invitation', { invitation_code: code });
+      if (error) throw error;
+      return data;
     },
     async adminGym() {
       const gymId = await api.gymId();
