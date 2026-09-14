@@ -572,7 +572,9 @@
       if (error) throw error;
     },
     async adminStudents() {
-      const { data, error } = await client.from('gym_members').select('user_id, gym_id, status, created_at').order('created_at', { ascending: false });
+      const gymId = await api.gymId();
+      if (!gymId) return [];
+      const { data, error } = await client.from('gym_members').select('user_id, gym_id, status, created_at').eq('gym_id', gymId).order('created_at', { ascending: false });
       if (error) throw error;
       const ids = (data || []).map((row) => row.user_id);
       if (!ids.length) return [];
