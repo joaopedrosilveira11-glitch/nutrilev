@@ -109,7 +109,7 @@
   const students = [];
   const roleLabels = { student: 'Aluno', coach: 'Coach / Personal', admin: 'Administração' };
   const navByRole = {
-    student: [['overview', '⌂', 'Visão geral'], ['plan', '☰', 'Meu plano'], ['academy', '▣', 'Minha Academia'], ['progress', '◔', 'Meu progresso'], ['assistant', '✦', 'Nutri IA'], ['profile', '◉', 'Meu perfil']],
+    student: [['overview', '⌂', 'Visão geral'], ['workout', '🏋️', 'Minha ficha'], ['plan', '☰', 'Meu plano'], ['academy', '▣', 'Minha Academia'], ['progress', '◔', 'Meu progresso'], ['assistant', '✦', 'Nutri IA'], ['profile', '◉', 'Meu perfil']],
     coach: [['overview', '⌂', 'Dashboard'], ['clients', '◎', 'Meus alunos'], ['workouts', '☰', 'Treinos'], ['exercises', '◇', 'Exercícios'], ['evolution', '◔', 'Evolução'], ['notifications', '♢', 'Notificações'], ['profile', '◉', 'Perfil']],
     admin: [['overview', '⌂', 'Dashboard'], ['members', '◎', 'Alunos'], ['coaches', '♧', 'Coaches'], ['gym', '▣', 'Academia'], ['attendance', '◷', 'Frequência'], ['checkins', '✓', 'Check-ins'], ['reports', '▤', 'Relatórios'], ['settings', '⚙', 'Configurações']],
   };
@@ -311,7 +311,7 @@
   }
   function studentOverview() {
     const assigned = state.remote ? (remoteData.workouts || []) : getSavedWorkouts();
-    const assignedCard = `<article class="card table-card">${cardHeading('Treinos enviados pelo Coach','plan')}<div class="student-workout-list">${assigned.length ? assigned.map((workout) => `<div class="student-workout"><div><strong>${esc(workout.name)}</strong><small>${esc(workout.muscles)} · ${workout.exercises.length} exercícios</small></div><span class="status">Disponível</span></div>`).join('') : '<p class="empty-state">Seu Coach ainda não enviou uma ficha.</p>'}</div></article>`;
+    const assignedCard = `<article class="card table-card">${cardHeading('Treinos enviados pelo Coach','workout')}<div class="student-workout-list">${assigned.length ? assigned.map((workout) => `<div class="student-workout"><div><strong>${esc(workout.name)}</strong><small>${esc(workout.muscles)} · ${workout.exercises.length} exercícios</small></div><span class="status">Disponível</span></div>`).join('') : '<p class="empty-state">Seu Coach ainda não enviou uma ficha.</p>'}</div></article>`;
     const meals = remoteData.plan?.meals || [];
     const mealContent = meals.length ? meals.map((meal) => `<div class="meal-item"><div class="meal-icon">🍽</div><div class="meal-copy"><strong>${esc(meal.name)}</strong><small>${new Date(meal.consumed_at || meal.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</small></div><span class="status">Registrada</span></div>`).join('') : '<div class="empty-state"><strong>Comece registrando sua primeira refeição.</strong><p>Assim você acompanha suas metas ao longo do dia.</p></div>';
     const plan = remoteData.plan || { entries: [], goals: [] };
@@ -374,7 +374,7 @@
     const workouts = state.remote ? (remoteData.workouts || []) : getSavedWorkouts();
     const workout = workouts[0];
     if (!workout) {
-      shell('Meu treino', 'TREINO DO DIA', '<article class="card section-card student-workout-empty"><div class="empty-state"><strong>Você ainda não possui um treino cadastrado.</strong><p>Quando seu Coach enviar uma ficha, ela aparecerá aqui.</p><a class="primary-button" href="#/academy-details">Ver Minha Academia</a></div></article>');
+      shell('Minha ficha', 'FICHA DE TREINO', '<article class="card section-card student-workout-empty"><div class="empty-state"><strong>Você ainda não possui uma ficha cadastrada.</strong><p>Quando seu Coach enviar uma ficha, ela aparecerá aqui.</p><a class="primary-button" href="#/academy-details">Ver Minha Academia</a></div></article>');
       return;
     }
     const exercises = workout.exercises || [];
@@ -385,7 +385,7 @@
       const rest = exercise.rest ? `${exercise.rest} s` : 'Não informado';
       return `<article class="workout-exercise-card" data-exercise-index="${index}"><div class="workout-exercise-title"><span class="workout-exercise-number">${index + 1}</span><h3>${esc(exercise.name || exercise[0] || 'Exercício')}</h3><span class="status exercise-status">Pendente</span></div><div class="workout-exercise-facts"><label><span>Séries concluídas</span><input class="workout-input" data-field="sets" type="number" min="0" max="${esc(sets || 99)}" value="0" /></label><label><span>Repetições</span><input class="workout-input" data-field="reps" type="number" min="0" value="${esc(reps || '')}" /></label><label><span>Carga (kg)</span><input class="workout-input" data-field="load" type="number" min="0" step="0.5" value="${esc(load || '')}" /></label><div><span>Descanso</span><strong>${esc(rest)}</strong></div></div><div class="workout-exercise-actions"><button class="outline-button" type="button" data-rest-seconds="${Number(exercise.rest || 60)}" data-action="rest">Iniciar descanso</button><button class="primary-button" type="button" data-action="finish-exercise">Finalizar exercício</button></div></article>`;
     }).join('') : '<p class="empty-state">Este treino ainda não possui exercícios cadastrados.</p>';
-    shell('Meu treino', 'TREINO DO DIA', `<article class="card workout-day-hero"><div><span class="eyebrow">TREINO DO DIA</span><h2>${esc(workout.name || 'Treino')}</h2><p>${esc(workout.muscles || 'Treino personalizado')} · ${exercises.length} exercício${exercises.length === 1 ? '' : 's'}</p><strong class="workout-elapsed" id="workoutElapsed">00:00</strong><a class="outline-button workout-academy-link" href="#/academy-details">Minha Academia</a></div><div class="workout-day-icon">🏋️</div></article><article class="card table-card student-workout-details">${cardHeading('Executar treino')}<div class="workout-exercise-list">${rows}</div><p class="form-message" id="workoutExecutionFeedback" hidden></p><button class="primary-button finish-workout-button" type="button" data-action="finish-workout">Finalizar treino</button></article><article class="card section-card workout-notes-card">${cardHeading('Observações')}<p class="${workout.notes ? 'admin-copy' : 'empty-state'}">${workout.notes ? esc(workout.notes) : 'Nenhuma observação cadastrada para este treino.'}</p></article>`);
+    shell('Minha ficha', 'FICHA DE TREINO', `<article class="card workout-day-hero"><div><span class="eyebrow">FICHA DE TREINO</span><h2>${esc(workout.name || 'Treino')}</h2><p>${esc(workout.muscles || 'Treino personalizado')} · ${exercises.length} exercício${exercises.length === 1 ? '' : 's'}</p><strong class="workout-elapsed" id="workoutElapsed">00:00</strong><a class="outline-button workout-academy-link" href="#/academy-details">Minha Academia</a></div><div class="workout-day-icon">🏋️</div></article><article class="card table-card student-workout-details">${cardHeading('Executar ficha')}<div class="workout-exercise-list">${rows}</div><p class="form-message" id="workoutExecutionFeedback" hidden></p><button class="primary-button finish-workout-button" type="button" data-action="finish-workout">Finalizar ficha</button></article><article class="card section-card workout-notes-card">${cardHeading('Observações')}<p class="${workout.notes ? 'admin-copy' : 'empty-state'}">${workout.notes ? esc(workout.notes) : 'Nenhuma observação cadastrada para este treino.'}</p></article>`);
     const workoutStorageKey = `nutrilev.workout.started.${workout.id || workout.name || 'current'}`;
     const storedStartedAt = Number(sessionStorage.getItem(workoutStorageKey));
     const startedAt = Number.isFinite(storedStartedAt) && storedStartedAt > 0 ? storedStartedAt : Date.now();
@@ -1011,7 +1011,8 @@
     });
   }
   function workoutForm(exercise = {}) {
-    return `<div class="exercise-form-row"><input name="exerciseName" required placeholder="Nome do exercício" value="${esc(exercise.name || '')}" aria-label="Nome do exercício" /><input name="sets" type="number" min="1" value="${exercise.sets || ''}" required aria-label="Séries" /><input name="reps" type="number" min="1" value="${exercise.reps || ''}" required aria-label="Repetições" /><input name="load" type="text" placeholder="Ex.: 20 kg" value="${esc(exercise.load || '')}" aria-label="Carga inicial" /><input name="rest" type="text" placeholder="Ex.: 60 s" value="${esc(exercise.rest || '')}" aria-label="Intervalo" /><div class="exercise-order"><button type="button" class="move-exercise" data-direction="up" aria-label="Mover exercício para cima">↑</button><button type="button" class="move-exercise" data-direction="down" aria-label="Mover exercício para baixo">↓</button></div><button class="remove-exercise" type="button" aria-label="Remover exercício">×</button></div>`;
+    const options = ['<option value="">Selecionar exercício pronto...</option>', ...(remoteData.exercises || []).map((item) => `<option value="${esc(item.name)}" ${item.name === exercise.name ? 'selected' : ''}>${esc(item.name)}${item.muscle_group ? ` · ${esc(item.muscle_group)}` : ''}</option>`)].join('');
+    return `<div class="exercise-form-row"><select name="exercisePreset" aria-label="Selecionar exercício pronto">${options}</select><input name="exerciseName" required placeholder="Ou digite um exercício manualmente" value="${esc(exercise.name || '')}" aria-label="Nome do exercício" /><input name="sets" type="number" min="1" value="${exercise.sets || ''}" required aria-label="Séries" /><input name="reps" type="number" min="1" value="${exercise.reps || ''}" required aria-label="Repetições" /><input name="load" type="text" placeholder="Ex.: 20 kg" value="${esc(exercise.load || '')}" aria-label="Carga inicial" /><input name="rest" type="text" placeholder="Ex.: 60 s" value="${esc(exercise.rest || '')}" aria-label="Intervalo" /><div class="exercise-order"><button type="button" class="move-exercise" data-direction="up" aria-label="Mover exercício para cima">↑</button><button type="button" class="move-exercise" data-direction="down" aria-label="Mover exercício para baixo">↓</button></div><button class="remove-exercise" type="button" aria-label="Remover exercício">×</button></div>`;
   }
   function getSavedWorkouts() {
     return state.remote ? (remoteData.workouts || []) : [];
@@ -1041,6 +1042,10 @@
         const target = event.target.dataset.direction === 'up' ? row.previousElementSibling : row.nextElementSibling;
         if (target) event.target.dataset.direction === 'up' ? exerciseList.insertBefore(row, target) : exerciseList.insertBefore(target, row);
       }
+    });
+    exerciseList.addEventListener('change', (event) => {
+      if (!event.target.matches('[name="exercisePreset"]') || !event.target.value) return;
+      event.target.closest('.exercise-form-row').querySelector('[name="exerciseName"]').value = event.target.value;
     });
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -1549,7 +1554,7 @@
         } else {
           studentAcademyDetails();
         }
-      } else if (page() === 'academy' && window.NUTRILEV_MOBILE_APP) {
+      } else if (page() === 'workout' || (page() === 'academy' && window.NUTRILEV_MOBILE_APP)) {
         studentWorkout();
       } else if (page() === 'progress') {
         studentProgress();

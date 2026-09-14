@@ -4,7 +4,7 @@
     studentNavigation: [
       ['overview', '🏠', 'Início'],
       ['plan', '🍽️', 'Alimentação'],
-      ['academy', '🏋️', 'Treino'],
+      ['workout', '🏋️', 'Minha ficha'],
       ['progress', '📊', 'Evolução'],
       ['profile', '👤', 'Perfil'],
     ],
