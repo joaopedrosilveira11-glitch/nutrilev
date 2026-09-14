@@ -51,7 +51,7 @@
       if (typeof data.download_url !== 'string' || !data.download_url.startsWith('https://')) {
         throw new Error('O link seguro do APK não está disponível agora.');
       }
-      return data.download_url;
+      return { url: data.download_url, fileName: data.file_name || 'Nutrilev.apk' };
     },
     async notifications() {
       const user = await api.user();

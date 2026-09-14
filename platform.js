@@ -829,12 +829,16 @@
       button.disabled = true;
       feedback.hidden = true;
       try {
-        const downloadUrl = await dataService.downloadApk();
-        if (downloadWindow) {
-          downloadWindow.location.href = downloadUrl;
-        } else {
-          window.location.assign(downloadUrl);
-        }
+        const download = await dataService.downloadApk();
+        const link = document.createElement('a');
+        link.href = download.url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.download = download.fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        downloadWindow?.close();
       } catch (error) {
         downloadWindow?.close();
         feedback.textContent = error.message || 'Não foi possível preparar o download do APK.';
