@@ -57,6 +57,7 @@
       const user = await api.user();
       if (!user) return [];
       const { data, error } = await client.from('notifications').select('id, title, body, is_read, created_at').eq('user_id', user.id).order('created_at', { ascending: false }).limit(50);
+      if (error && isMissingTableError(error, 'notifications')) return [];
       if (error) throw error;
       return (data || []).map((item) => ({ ...item, read_at: item.is_read ? item.created_at : null }));
     },
