@@ -311,7 +311,7 @@ server-side and deploy it:
 
 ```bash
 supabase secrets set GEMINI_API_KEY=your-gemini-key
-supabase secrets set GEMINI_MODEL=gemini-2.5-flash
+supabase secrets set GEMINI_MODEL=gemini-3.8-flash
 supabase functions deploy nutri-ai
 ```
 
