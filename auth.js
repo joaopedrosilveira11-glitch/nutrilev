@@ -1,8 +1,8 @@
 (function () {
   const config = window.Nutrilev?.config;
   const client = window.Nutrilev?.services?.supabase || window.supabase?.createClient(
-    config?.supabaseUrl || 'https://lzxanuccrhlwihfurkva.supabase.co',
-    config?.supabasePublishableKey || 'sb_publishable_177vwdcUp8ZNnaMlyJrioQ_iosle9rw',
+    config?.supabaseUrl || 'https://ostcnhshefjjnhuotucf.supabase.co',
+    config?.supabasePublishableKey || 'sb_publishable_rg6aHaeawljbkG5RY2uTfA_gi4PWobG',
     { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } },
   );
   const roles = window.Nutrilev?.auth?.roles;
