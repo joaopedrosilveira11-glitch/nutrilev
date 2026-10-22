@@ -227,6 +227,9 @@ application-isolated storage under the app-specific key
 non-student account is signed out and directed to the Web platform for Coach
 or Administrator access.
 
+The Web platform, public landing page and Android app offer a light/dark theme
+toggle. The selected theme is saved locally in each browser or app installation.
+
 Install the Android SDK and JDK 21, then run the debug build:
 
 ```powershell

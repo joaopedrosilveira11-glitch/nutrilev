@@ -26,3 +26,9 @@
 .pricing-copy{grid-column:1/-1}
 @media(max-width:800px){.audience-section,.coach-section{grid-template-columns:1fr;gap:35px;padding-top:70px;padding-bottom:70px}.plans-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.audience-grid,.plans-grid{grid-template-columns:1fr}.coach-resources{display:grid;grid-template-columns:1fr}.hero-actions{align-items:flex-start;flex-direction:column;gap:16px}}
+html[data-theme="dark"] .audience-grid span,
+html[data-theme="dark"] .coach-resources span,
+html[data-theme="dark"] .plan-card,
+html[data-theme="dark"] .button-outline{background:#1b2822;border-color:var(--line);color:var(--ink)}
+html[data-theme="dark"] .audience-section-dark .audience-grid span{background:#285a49;border-color:#3d705f;color:#effff8}
+html[data-theme="dark"] .plan-card-featured{background:linear-gradient(135deg,#20382b,#1b2822);border-color:#365143}

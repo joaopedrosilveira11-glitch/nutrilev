@@ -4,12 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Nutrilev para alunos, coaches e academias." />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://*.supabase.co; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" />
     <title>Nutrilev | Plataforma</title>
+    <script src="theme.js"></script>
     <link rel="icon" type="image/png" href="assets/logo-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="platform.css?v=74" />
+    <link rel="stylesheet" href="platform.css?v=75" />
     <link rel="stylesheet" href="platform-density.css?v=4" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="lib/config.js"></script>
@@ -56,7 +58,7 @@
           <button class="menu-button" id="menuButton" type="button" aria-label="Abrir menu"></button>
           <a class="mobile-topbar-brand" href="landing.html" aria-label="Nutrilev início"><img src="assets/logo-icon.png" alt="Nutrilev" /></a>
           <div><span class="eyebrow" id="pageEyebrow">VISÃO GERAL</span><h1 id="pageTitle">Seu dia mais leve</h1></div>
-          <div class="topbar-actions"><button class="icon-button" type="button" aria-label="Notificações"><i></i></button><div class="user-chip"><span id="userInitial">A</span><div><strong id="userName">Aluno</strong><small id="userRole">Aluno</small></div></div></div>
+          <div class="topbar-actions"><button class="theme-toggle" type="button" data-theme-toggle aria-label="Usar modo escuro" title="Usar modo escuro" aria-pressed="false"><span aria-hidden="true" data-theme-icon>☾</span><span data-theme-label>Modo escuro</span></button><button class="icon-button" type="button" aria-label="Notificações"><i></i></button><div class="user-chip"><span id="userInitial">A</span><div><strong id="userName">Aluno</strong><small id="userRole">Aluno</small></div></div></div>
         </header>
         <div class="demo-banner" id="demoBanner" hidden></div>
         <section class="dashboard" id="dashboard" aria-live="polite" aria-busy="true">
@@ -72,6 +74,7 @@
 
     <div class="auth-overlay" id="authOverlay" hidden>
       <div class="auth-card">
+        <button class="theme-toggle login-theme-toggle" type="button" data-theme-toggle aria-label="Usar modo escuro" title="Usar modo escuro" aria-pressed="false"><span aria-hidden="true" data-theme-icon>☾</span><span data-theme-label>Modo escuro</span></button>
         <button class="close-auth" id="closeAuth" type="button" aria-label="Fechar">×</button>
         <img src="assets/logo-icon.png" alt="" /><span class="eyebrow accent">ACESSO NUTRILEV</span>
         <h2>Entre na sua plataforma.</h2><p>Use o mesmo e-mail da sua conta Nutrilev.</p>

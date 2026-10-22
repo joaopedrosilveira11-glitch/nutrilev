@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://*.supabase.co; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" />
     <title>Entrar | Nutrilev</title>
+    <script src="theme.js"></script>
     <link rel="icon" type="image/png" href="assets/logo-icon.png" />
-    <link rel="stylesheet" href="platform.css" />
+    <link rel="stylesheet" href="platform.css?v=75" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="lib/config.js"></script>
     <script src="services/index.js"></script>
@@ -27,6 +28,7 @@
       </section>
       <section class="login-panel">
         <div class="auth-card login-card">
+          <button class="theme-toggle login-theme-toggle" type="button" data-theme-toggle aria-label="Usar modo escuro" title="Usar modo escuro" aria-pressed="false"><span aria-hidden="true" data-theme-icon>☾</span><span data-theme-label>Modo escuro</span></button>
           <img src="assets/logo-icon.png" alt="" />
           <span class="eyebrow accent" id="formEyebrow">ACESSO</span>
           <h2 id="formTitle">Entre na sua conta.</h2>
@@ -175,7 +177,7 @@
                 if (result.error) throw result.error;
                 const checkoutUrl = result.data?.checkout_url;
                 if (!checkoutUrl || !checkoutUrl.startsWith('https://')) {
-                  throw new Error(result.data?.error || 'Não foi possível iniciar o pagamento no Mercado Pago.');
+                  throw new Error(result.data?.error || 'Não foi possível iniciar o pagamento com Stripe.');
                 }
                 window.location.href = checkoutUrl;
                 return;

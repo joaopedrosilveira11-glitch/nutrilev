@@ -297,3 +297,102 @@
 .user-chip>span.has-avatar{overflow:hidden;padding:0}.user-chip>span.has-avatar img{display:block;width:100%;height:100%;object-fit:cover}.student-avatar{display:grid;place-items:center;overflow:hidden;border-radius:50%;background:var(--green-soft);color:var(--green-dark);font-weight:800}.student-avatar.has-photo img{display:block;width:100%;height:100%;object-fit:cover}.student-avatar-large{width:70px;height:70px;font-size:19px}.student-avatar-medium{width:58px;height:58px;font-size:22px;flex-shrink:0}.profile-photo-form{display:flex;align-items:center;gap:16px;margin-bottom:20px}.profile-photo-button{display:inline-flex;align-items:center;cursor:pointer}.profile-photo-form .admin-copy{margin-top:7px}
 .notification-panel{position:absolute;z-index:5;top:58px;right:0;width:min(360px,calc(100vw - 32px));background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 45px rgba(33,62,49,.18);overflow:hidden}.notification-panel-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}.notification-panel-header button{background:transparent;color:var(--green-dark);font-size:11px;font-weight:700}.notification-panel-list{max-height:360px;overflow:auto}.notification-panel-item{display:flex;gap:10px;width:100%;padding:13px 16px;text-align:left;background:#fff;border:0;border-bottom:1px solid #edf1ed;color:var(--ink)}.notification-panel-item.unread{background:#f4fbf6}.notification-panel-item:disabled{cursor:default;opacity:.72}.notification-panel-item>span:last-child{display:grid;gap:3px;min-width:0}.notification-panel-item strong{font-size:12px}.notification-panel-item small,.notification-panel-item time{color:var(--muted);font-size:11px;line-height:1.35}.notification-panel-dot{width:7px;height:7px;margin-top:4px;border-radius:50%;background:#cbd7d0;flex:0 0 7px}.notification-panel-item.unread .notification-panel-dot{background:var(--orange)}
 .topbar-actions{position:relative}
+
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);font-size:12px;font-weight:700;white-space:nowrap}
+.theme-toggle:hover{border-color:var(--green);color:var(--green-dark)}
+.theme-toggle [data-theme-icon]{font-size:17px;line-height:1}
+.login-theme-toggle{position:absolute;top:18px;right:18px}
+.auth-overlay .auth-card{padding-top:70px}
+.auth-overlay .login-theme-toggle{right:auto;left:18px}
+html[data-theme="dark"]{color-scheme:dark;--ink:#e7efe9;--muted:#a1b2aa;--cream:#111a16;--panel:#1b2822;--line:#34443c;--green:#46bd89;--green-dark:#77d5a7;--green-soft:#20392d;--shadow:0 20px 55px rgba(0,0,0,.22);--surface-soft:#223129;--surface-raised:#293a31}
+html[data-theme="dark"] body{background:var(--cream);color:var(--ink)}
+html[data-theme="dark"] .platform-topbar{background:rgba(24,37,31,.96)}
+html[data-theme="dark"] .demo-banner{background:#1d3026;border-color:#30483a;color:#b5cabe}
+html[data-theme="dark"] .welcome-card,
+html[data-theme="dark"] .profile-hero,
+html[data-theme="dark"] .workout-day-hero,
+html[data-theme="dark"] .evolution-dashboard-hero,
+html[data-theme="dark"] .academy-profile-hero,
+html[data-theme="dark"] .dashboard-calories{background:linear-gradient(135deg,#20382b,#1b2822)}
+html[data-theme="dark"] .hydration-hero{background:linear-gradient(135deg,#1c3538,#1b2822)}
+html[data-theme="dark"] .auth-layout{background:#17231d}
+html[data-theme="dark"] .auth-panel{background:radial-gradient(circle at 12% 15%,rgba(29,154,108,.12),transparent 32%),radial-gradient(circle at 88% 85%,rgba(100,134,202,.1),transparent 34%),linear-gradient(135deg,#17231d 0%,#111a16 52%,#1c2b23 100%)}
+html[data-theme="dark"] .auth-overlay{background:rgba(8,14,11,.82)}
+html[data-theme="dark"] .auth-card,
+html[data-theme="dark"] .outline-button,
+html[data-theme="dark"] .student-toolbar input,
+html[data-theme="dark"] .student-toolbar select,
+html[data-theme="dark"] .workout-fields input,
+html[data-theme="dark"] .workout-notes-label textarea,
+html[data-theme="dark"] .exercise-form-row input,
+html[data-theme="dark"] .exercise-form-row select,
+html[data-theme="dark"] .assessment-form input,
+html[data-theme="dark"] .assessment-form select,
+html[data-theme="dark"] .assessment-form textarea,
+html[data-theme="dark"] .evolution-toolbar select,
+html[data-theme="dark"] .food-entry-edit-form input,
+html[data-theme="dark"] .food-entry-edit-form select,
+html[data-theme="dark"] .food-result,
+html[data-theme="dark"] .move-exercise,
+html[data-theme="dark"] .remove-exercise,
+html[data-theme="dark"] .academy-logo,
+html[data-theme="dark"] .academy-logo-placeholder,
+html[data-theme="dark"] .notification-panel,
+html[data-theme="dark"] .notification-panel-item,
+html[data-theme="dark"] .skeleton-card,
+html[data-theme="dark"] .ai-suggestion{background:var(--panel);color:var(--ink)}
+html[data-theme="dark"] .auth-card input,
+html[data-theme="dark"] .settings-list input,
+html[data-theme="dark"] .settings-list select{background:#142019;color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] .auth-card input:focus{background:#18261f}
+html[data-theme="dark"] .mobile-auth-tabs button.active{background:var(--panel);color:var(--ink)}
+html[data-theme="dark"] .profile-facts div,
+html[data-theme="dark"] .frequency-grid div,
+html[data-theme="dark"] .profile-workout-summary div,
+html[data-theme="dark"] .exercise-form-row,
+html[data-theme="dark"] .student-academy-facts div,
+html[data-theme="dark"] .source-summary div,
+html[data-theme="dark"] .integration-metrics>div,
+html[data-theme="dark"] .dashboard-macro-grid div,
+html[data-theme="dark"] .evolution-kpi-grid>div,
+html[data-theme="dark"] .evolution-measurements div,
+html[data-theme="dark"] .hydration-today-values div,
+html[data-theme="dark"] .workout-exercise-card,
+html[data-theme="dark"] .workout-history-row,
+html[data-theme="dark"] .exercise-comparison-row,
+html[data-theme="dark"] .notification-panel-item.unread{background:var(--surface-soft)}
+html[data-theme="dark"] .meal-item,
+html[data-theme="dark"] .client-item,
+html[data-theme="dark"] .activity-item,
+html[data-theme="dark"] .notification-panel-item{border-color:var(--line)}
+html[data-theme="dark"] .meal-icon,
+html[data-theme="dark"] .workout-exercise-facts div,
+html[data-theme="dark"] .workout-exercise-facts label,
+html[data-theme="dark"] .workout-history-exercises span,
+html[data-theme="dark"] .exercise-comparison-values span,
+html[data-theme="dark"] .food-favorite-button,
+html[data-theme="dark"] .integration-source,
+html[data-theme="dark"] .admin-member-detail,
+html[data-theme="dark"] .admin-coach-panel{background:var(--surface-raised);color:var(--ink)}
+html[data-theme="dark"] .progress-track,
+html[data-theme="dark"] .usage-list b,
+html[data-theme="dark"] .skeleton-card span{background:#35453d}
+html[data-theme="dark"] .food-favorite-button.is-favorite,
+html[data-theme="dark"] .offline-status{background:#3b3320;color:#f0d58f}
+html[data-theme="dark"] .status.pending{background:#3b3320;color:#f0d58f}
+html[data-theme="dark"] .observation-item{background:#302b20}
+html[data-theme="dark"] .error-state{background:#342322}
+html[data-theme="dark"] .student-toolbar input,
+html[data-theme="dark"] .student-toolbar select,
+html[data-theme="dark"] .workout-fields input,
+html[data-theme="dark"] .workout-notes-label textarea,
+html[data-theme="dark"] .exercise-form-row input,
+html[data-theme="dark"] .exercise-form-row select,
+html[data-theme="dark"] .assessment-form input,
+html[data-theme="dark"] .assessment-form select,
+html[data-theme="dark"] .assessment-form textarea,
+html[data-theme="dark"] .evolution-toolbar select,
+html[data-theme="dark"] .food-entry-edit-form input,
+html[data-theme="dark"] .food-entry-edit-form select{border-color:var(--line);color:var(--ink)}
+html[data-theme="dark"] .route-page{background:var(--cream)}
+@media(max-width:680px){.theme-toggle{width:38px;min-width:38px;padding:0}.theme-toggle [data-theme-label]{display:none}.topbar-actions{gap:10px}}

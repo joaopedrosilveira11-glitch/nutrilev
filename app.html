@@ -6,11 +6,12 @@
     <meta name="theme-color" content="#10251f" />
     <meta name="description" content="Nutrilev para alunos: treino, alimentação e evolução em um só lugar." />
     <title>Nutrilev | Área do aluno</title>
+    <script src="theme.js"></script>
     <link rel="icon" type="image/png" href="assets/logo-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="platform.css?v=74" />
+    <link rel="stylesheet" href="platform.css?v=75" />
     <link rel="stylesheet" href="platform-density.css?v=4" />
     <script>window.NUTRILEV_MOBILE_APP = true;</script>
     <script src="assets/vendor/supabase.js"></script>
@@ -53,7 +54,7 @@
           <button class="menu-button" id="menuButton" type="button" aria-label="Abrir menu"></button>
           <a class="mobile-topbar-brand" href="landing.html" aria-label="Nutrilev início"><img src="assets/logo-icon.png" alt="Nutrilev" /></a>
           <div><span class="eyebrow" id="pageEyebrow">VISÃO GERAL</span><h1 id="pageTitle">Seu dia mais leve</h1></div>
-          <div class="topbar-actions"><button class="icon-button" type="button" aria-label="Notificações"><i></i></button><div class="user-chip"><span id="userInitial">A</span><div><strong id="userName">Aluno</strong><small id="userRole">Aluno</small></div></div></div>
+          <div class="topbar-actions"><button class="theme-toggle" type="button" data-theme-toggle aria-label="Usar modo escuro" title="Usar modo escuro" aria-pressed="false"><span aria-hidden="true" data-theme-icon>☾</span><span data-theme-label>Modo escuro</span></button><button class="icon-button" type="button" aria-label="Notificações"><i></i></button><div class="user-chip"><span id="userInitial">A</span><div><strong id="userName">Aluno</strong><small id="userRole">Aluno</small></div></div></div>
         </header>
         <section class="dashboard" id="dashboard" aria-live="polite" aria-busy="true">
           <div class="dashboard-grid loading-state" aria-label="Carregando área do aluno">
@@ -77,6 +78,7 @@
         </section>
         <section class="auth-panel">
           <div class="auth-card">
+            <button class="theme-toggle login-theme-toggle" type="button" data-theme-toggle aria-label="Usar modo escuro" title="Usar modo escuro" aria-pressed="false"><span aria-hidden="true" data-theme-icon>☾</span><span data-theme-label>Modo escuro</span></button>
             <img src="assets/logo-icon.png" alt="" /><span class="eyebrow accent">ACESSO</span>
             <div class="mobile-auth-tabs"><button type="button" class="active" data-auth-mode="login">Entrar</button><button type="button" data-auth-mode="signup">Criar conta</button></div>
             <div data-auth-panel="login"><h2>Entre na sua conta.</h2><p>Seu perfil define automaticamente a área disponível.</p>

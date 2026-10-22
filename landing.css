@@ -14,3 +14,43 @@
 @media (min-width:1101px){.pricing{grid-template-columns:1fr .7fr .7fr;gap:28px}.pricing-copy{max-width:520px}}
 @media (min-width:761px) and (max-width:1100px){.pricing{grid-template-columns:1fr 1fr;gap:30px}.pricing-copy{grid-column:1 / -1}}
 .pricing-card-annual{background:#fff;border-color:#cde8d9}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--ink);font:700 12px "DM Sans",sans-serif;white-space:nowrap}
+.theme-toggle:hover{border-color:var(--green);color:var(--green)}
+.theme-toggle [data-theme-icon]{font-size:17px;line-height:1}
+html[data-theme="dark"]{color-scheme:dark;--ink:#e7efe9;--muted:#a1b2aa;--line:#34443c;--cream:#111a16;--green:#69d3a0;--deep:#173b2e;--mint:#8ce2b7}
+html[data-theme="dark"] body{background:var(--cream);color:var(--ink)}
+html[data-theme="dark"] .site-nav,
+html[data-theme="dark"] .trust-strip{color:var(--muted)}
+html[data-theme="dark"] .floating-note,
+html[data-theme="dark"] .floating-ai,
+html[data-theme="dark"] .feature-card,
+html[data-theme="dark"] .access-dialog,
+html[data-theme="dark"] .faq details,
+html[data-theme="dark"] .analytics-consent,
+html[data-theme="dark"] .pricing-card-annual{background:#1b2822;border-color:var(--line);color:var(--ink)}
+html[data-theme="dark"] .feature-large,
+html[data-theme="dark"] .pricing-card{background:linear-gradient(135deg,#20382b,#1b2822);border-color:#365143}
+html[data-theme="dark"] .feature-card p,
+html[data-theme="dark"] .pricing-copy>p,
+html[data-theme="dark"] .trust-strip,
+html[data-theme="dark"] .floating-note small,
+html[data-theme="dark"] .floating-ai small{color:var(--muted)}
+html[data-theme="dark"] .feature-number{color:#91a69b}
+html[data-theme="dark"] .ring-stat{background:conic-gradient(var(--green) 0 75%,#35453d 75%)}
+html[data-theme="dark"] .ring-stat:before{background:#1b2822}
+html[data-theme="dark"] .steps-visual,
+html[data-theme="dark"] .demo-phone{background:#1a2a22}
+html[data-theme="dark"] .demo-goal{background:#23382d}
+html[data-theme="dark"] .demo-phone,
+html[data-theme="dark"] .demo-phone strong,
+html[data-theme="dark"] .pricing-value,
+html[data-theme="dark"] .pricing-card ul{color:var(--ink)}
+html[data-theme="dark"] .access-dialog input,
+html[data-theme="dark"] .access-dialog select,
+html[data-theme="dark"] .access-dialog textarea{background:#142019;color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] .faq details{border-color:var(--line)}
+html[data-theme="dark"] .analytics-consent button+button{background:#293a31;color:var(--ink)}
+html[data-theme="dark"] .form-notice{background:#20392d;color:#bce8ce}
+html[data-theme="dark"] .form-notice.error{background:#342322;color:#f0b7ac}
+html[data-theme="dark"] .pricing-card li:before{background:#294b37}
+@media(max-width:760px){.site-header{gap:12px}.site-header .theme-toggle{width:38px;min-width:38px;padding:0}.site-header .theme-toggle [data-theme-label]{display:none}}
