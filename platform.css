@@ -396,3 +396,10 @@ html[data-theme="dark"] .food-entry-edit-form input,
 html[data-theme="dark"] .food-entry-edit-form select{border-color:var(--line);color:var(--ink)}
 html[data-theme="dark"] .route-page{background:var(--cream)}
 @media(max-width:680px){.theme-toggle{width:38px;min-width:38px;padding:0}.theme-toggle [data-theme-label]{display:none}.topbar-actions{gap:10px}}
+.login-layout{background:linear-gradient(90deg,rgba(3,19,13,.68),rgba(3,19,13,.28)),url("assets/auth-background.png") center/cover no-repeat}
+.login-panel{background:transparent}
+.auth-panel{background:linear-gradient(rgba(3,19,13,.34),rgba(3,19,13,.34)),url("assets/auth-background.png") center/cover no-repeat}
+.auth-overlay{background:linear-gradient(rgba(3,19,13,.48),rgba(3,19,13,.48)),url("assets/auth-background.png") center/cover no-repeat}
+html[data-theme="dark"] .auth-panel{background:linear-gradient(rgba(3,19,13,.24),rgba(3,19,13,.24)),url("assets/auth-background.png") center/cover no-repeat}
+html[data-theme="dark"] .auth-overlay{background:linear-gradient(rgba(3,19,13,.58),rgba(3,19,13,.58)),url("assets/auth-background.png") center/cover no-repeat}
+@media(max-width:760px){.login-layout,.auth-panel,.auth-overlay{background-position:left center}html[data-theme="dark"] .auth-panel{background-position:left center}html[data-theme="dark"] .auth-overlay{background-position:left center}}

@@ -54,3 +54,4 @@ html[data-theme="dark"] .form-notice{background:#20392d;color:#bce8ce}
 html[data-theme="dark"] .form-notice.error{background:#342322;color:#f0b7ac}
 html[data-theme="dark"] .pricing-card li:before{background:#294b37}
 @media(max-width:760px){.site-header{gap:12px}.site-header .theme-toggle{width:38px;min-width:38px;padding:0}.site-header .theme-toggle [data-theme-label]{display:none}}
+.access-modal{background:linear-gradient(rgba(3,19,13,.56),rgba(3,19,13,.56)),url("assets/auth-background.png") center/cover fixed}
